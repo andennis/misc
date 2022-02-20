@@ -1,0 +1,11 @@
+[Unit]
+Description=Ping openvpn-srv to make sure the VPN is really up
+Requires=openvpn@openvpn_client_openproject-srv.service 
+After=openvpn@openvpn_client_openproject-srv.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+ExecStartPre=/bin/sleep 15
+ExecStart=/bin/ping -c 2 -w 300 10.1.1.1
+TimeoutStartSec=330
