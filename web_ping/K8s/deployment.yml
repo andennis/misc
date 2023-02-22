@@ -2,19 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
-  name: web-app1-deploy
+  name: web-ping-deploy
 spec:
   replicas: 3
   selector:
     matchLabels:
-      project: web-app1
+      project: web-ping
   template:
     metadata:
       labels:
-        project: web-app1
+        project: web-ping
     spec:
       containers:
-      - name: web-app1-pod
-        image: andennis/web-app1
+      - name: web-ping-pod
+        image: andennis/web-ping:1.0
         ports:
         - containerPort: 5000

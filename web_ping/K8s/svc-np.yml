@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: default
-  name: web-app1-np
+  name: web-ping-np
 spec:
   type: NodePort
 #  externalIPs:
@@ -13,4 +13,4 @@ spec:
     targetPort: 5000
     nodePort: 31111
   selector:
-    project: web-app1
+    project: web-ping

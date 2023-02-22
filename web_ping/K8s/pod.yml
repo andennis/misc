@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Pod
 metadata:
   namespace: default
-  name: web-app1-pod
+  name: web-ping-pod
   labels:
-    project: web-app1
+    project: web-ping
 spec:
   containers:
     - name: web-ctr
-      image: andennis/web_app1
+      image: andennis/web-ping:1.0
       ports:
         - containerPort: 5000
