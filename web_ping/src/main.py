@@ -8,6 +8,8 @@ from flask import Flask
 
 app = Flask(__name__)
 
+WEB_PING_VERSION = '1.1'
+
 
 @app.route('/')
 @app.route('/ping')
@@ -18,6 +20,7 @@ def ping():
 @app.route('/info')
 def get_info():
     data = {
+        'app_version': WEB_PING_VERSION,
         'date_time': datetime.datetime.now(),
         'machine': {
             'host_name': platform.node(),

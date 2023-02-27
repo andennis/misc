@@ -7,7 +7,10 @@ metadata:
     project: web-ping
 spec:
   containers:
-    - name: web-ctr
-      image: andennis/web-ping:1.0
+    - name: web-ping
+      image: andennis/web-ping:1.1
+#      image: 192.168.2.29/web-ping:1.1
       ports:
         - containerPort: 5000
+#  imagePullSecrets:
+#    - name: docker-pull-secret
