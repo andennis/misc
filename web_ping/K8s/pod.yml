@@ -9,7 +9,7 @@ spec:
   containers:
     - name: web-ping
       image: andennis/web-ping:1.1
-#      image: 192.168.2.29/web-ping:1.1
+#      image: docker-registry-andn.local/web-ping:1.1
       ports:
         - containerPort: 5000
 #  imagePullSecrets:
