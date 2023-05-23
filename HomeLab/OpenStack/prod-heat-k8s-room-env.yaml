@@ -1,0 +1,4 @@
+parameters:
+  key_name: K8s-room-key
+  image: ubuntu-22.04-cloudimg-amd64
+  public_network: public1

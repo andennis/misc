@@ -1,0 +1,278 @@
+heat_template_version: 2021-04-16
+
+description: K8s-room
+
+parameters:
+  key_name:
+    type: string
+    label: Key Name
+    description: Name of key-pair to be used for compute instances
+    constraints:
+      - custom_constraint: nova.keypair
+        description: Must name a public key (pair) known to Nova
+  image:
+    type: string
+    label: Image name or ID
+    description: Image to be used for compute instance
+    default: ubuntu-22.04-cloudimg-amd64
+    constraints:
+      - custom_constraint: glance.image
+        description: Must identify an image known to Glance
+  public_network:
+    type: string
+    label: Public network name or ID
+    description: Public network with floating IP addresses.
+
+resources:
+  # Network
+  internal-net:
+    type: OS::Neutron::Net
+
+  internal-subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network_id: { get_resource: internal-net }
+      cidr: "10.2.2.0/24"
+      ip_version: 4
+      
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info: { network: {get_param: public_network} }
+      
+  k8s-room-router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet: { get_resource: internal-subnet }
+
+  # Security groups
+  default_sg:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - protocol: tcp
+          remote_ip_prefix: 0.0.0.0/0
+          port_range_min: 22
+          port_range_max: 22
+        - protocol: icmp
+          remote_ip_prefix: 0.0.0.0/0
+
+  web_sg:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - protocol: tcp
+          remote_ip_prefix: 0.0.0.0/0
+          port_range_min: 80
+          port_range_max: 80
+        - protocol: tcp
+          remote_ip_prefix: 0.0.0.0/0
+          port_range_min: 443
+          port_range_max: 443
+
+  k8s_sg:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      rules:
+        - protocol: tcp
+          remote_ip_prefix: 0.0.0.0/0
+          port_range_min: 6443
+          port_range_max: 6443
+
+  # Ports
+  deploy_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: internal-net }
+      security_groups:
+        - { get_resource: default_sg }
+      fixed_ips:
+        - subnet_id: { get_resource: internal-subnet }
+
+  controller01_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: internal-net }
+      security_groups:
+        - { get_resource: default_sg }
+        - { get_resource: k8s_sg }
+      fixed_ips:
+        - subnet_id: { get_resource: internal-subnet }
+
+  worker01_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: internal-net }
+      security_groups:
+        - { get_resource: default_sg }
+      fixed_ips:
+        - subnet_id: { get_resource: internal-subnet }
+
+  worker02_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: internal-net }
+      security_groups:
+        - { get_resource: default_sg }
+      fixed_ips:
+        - subnet_id: { get_resource: internal-subnet }
+
+  worker03_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: internal-net }
+      security_groups:
+        - { get_resource: default_sg }
+      fixed_ips:
+        - subnet_id: { get_resource: internal-subnet }
+
+  rancher_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_resource: internal-net }
+      security_groups:
+        - { get_resource: default_sg }
+        - { get_resource: web_sg }
+      fixed_ips:
+        - subnet_id: { get_resource: internal-subnet }
+
+
+  # Instances
+  deploy:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      flavor: m2.medium
+      block_device_mapping: 
+        - volume_id: { get_resource: deploy_vol }
+          delete_on_termination: false
+          device_name: "vda"
+      networks:
+        - port: { get_resource: deploy_port }
+
+  controller01:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      flavor: m2.large
+      block_device_mapping: 
+        - volume_id: { get_resource: controller_vol }
+          delete_on_termination: false
+          device_name: "vda"
+      networks:
+        - port: { get_resource: controller01_port }
+        
+  worker01:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      flavor: m2.xlarge
+      block_device_mapping: 
+        - volume_id: { get_resource: worker01_vol }
+          delete_on_termination: false 
+          device_name: "vda"
+      networks:
+        - port: { get_resource: worker01_port }
+
+  worker02:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      flavor: m2.xlarge
+      block_device_mapping: 
+        - volume_id: { get_resource: worker02_vol }
+          delete_on_termination: false
+          device_name: "vda"
+      networks:
+        - port: { get_resource: worker02_port }
+
+  worker03:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      flavor: m2.xlarge
+      block_device_mapping:
+        - volume_id: { get_resource: worker03_vol }
+          delete_on_termination: false
+          device_name: "vda"
+      networks:
+        - port: { get_resource: worker03_port }
+
+  rancher:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: key_name }
+      flavor: m2.medium
+      block_device_mapping:
+        - volume_id: { get_resource: rancher_vol }
+          delete_on_termination: false
+          device_name: "vda"
+      networks:
+        - port: { get_resource: rancher_port }
+
+  # Instance's volumes
+  deploy_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: 16
+      image: { get_param: image }
+
+  controller_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: 40
+      image: { get_param: image }
+
+  worker01_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: 64
+      image: { get_param: image }
+  worker02_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: 64
+      image: { get_param: image }
+  worker03_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: 64
+      image: { get_param: image }
+
+  rancher_vol:
+    type: OS::Cinder::Volume
+    properties:
+      size: 16
+      image: { get_param: image }
+
+  # Floating IPs assotiation
+  deploy_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_network }
+  deploy_floating_ip_assoc:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: deploy_floating_ip }
+      port_id: { get_resource: deploy_port }
+
+  controller01_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_network }
+  controller01_floating_ip_assoc:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: controller01_floating_ip }
+      port_id: { get_resource: controller01_port }
+
+  rancher_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: public_network }
+  rancher_floating_ip_assoc:
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: rancher_floating_ip }
+      port_id: { get_resource: rancher_port }
