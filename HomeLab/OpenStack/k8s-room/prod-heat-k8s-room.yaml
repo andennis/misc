@@ -46,7 +46,13 @@ resources:
       router_id: { get_resource: router }
       subnet: { get_resource: internal-subnet }
 
-  # Security groups
+  #Security groups
+  # default_sgr:
+  #   type: OS::Neutron::SecurityGroupRule
+  #   properties:
+  #     remote_group: { get_resource: default_sg }
+  #     security_group: { get_resource: default_sg }
+
   default_sg:
     type: OS::Neutron::SecurityGroup
     properties:
