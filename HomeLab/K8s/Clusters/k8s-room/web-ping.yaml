@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: default
+  name: web-ping-pod
+  labels:
+    project: web-ping
+spec:
+  containers:
+    - name: web-ping
+      image: registry.local/web-ping:1.1
+      ports:
+        - containerPort: 5000
+  imagePullSecrets:
+    - name: registry-local-client

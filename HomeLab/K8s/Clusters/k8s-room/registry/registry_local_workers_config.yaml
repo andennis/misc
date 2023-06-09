@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-local-crt
+  namespace: kube-system
+data:
+  registry_local.crt: |+
+    -----BEGIN CERTIFICATE-----
+    MIIFLjCCAxagAwIBAgIUGy27Nl8k+wpgUR8R+Dg4c6tZceAwDQYJKoZIhvcNAQEL
+    BQAwGTEXMBUGA1UEAwwOcmVnaXN0cnkubG9jYWwwHhcNMjMwNjA3MTgwNDUyWhcN
+    MjQwNjA2MTgwNDUyWjAZMRcwFQYDVQQDDA5yZWdpc3RyeS5sb2NhbDCCAiIwDQYJ
+    KoZIhvcNAQEBBQADggIPADCCAgoCggIBAJ/FTaqqI8rvCWnuTO75AZMyiTaSu+pW
+    g8bfrCSYekjVMh9B9IE/C5odYIR76ixmInr/CnfxaUOXwZoSQqwCGo9YWpXwZBYA
+    AJfVLSpwDyyTQPnhUQoNZucLk5yxyBuHcS2egmY5DMuMcaBU7pxN93qrjI1WqBrY
+    RzF4PsaPjqOH3MtdMz/DxQ9y14AGj09qf/tRD9wzaRcyrulzpLyK21fNcQpuGWFl
+    V157QKWVOFR9M/UyKBjNWkgOInZvIpu+HY3AC+uVvlA64W8qYOYtuMXOBvsHvNWG
+    GPTPuCFUhy1x3GELlp/GjB7C0MTW5phNKhF+pdCrE1nKdChCPIoYs7w6cDYmST1k
+    OQfmL17iTpziOyIG8UjKlub5enUASXrtvejj87yR6vfXZGJua+uxxJK3j74IOe3O
+    LuyspMmCk3sMCJD+d/8QKkBxBZlTmb3NNpbJD/qGYY5EqnCsiRsj3qICDGoH5xdm
+    Z2cAy9t0O/X9BX3kq6LI4y2JQ4YMyidX9LNWddnNjafxXNrDPPSUE0ZuBvViBrjP
+    Va3e/LSpKC7veZjOc9gY2yQO5wL/KA39TB3x4E6E3RZfSMzVvHTyZnn8rbSAuWKD
+    i05MgTnQvukL0gh5Gbn/rJFOv6mGzQC7LDFmsDYojwDfiMhJ6uDRuUiHl4v3QSWr
+    wCQbtwliN2E5AgMBAAGjbjBsMB0GA1UdDgQWBBSENuePsXMljozB5sv13QXtFil/
+    ITAfBgNVHSMEGDAWgBSENuePsXMljozB5sv13QXtFil/ITAPBgNVHRMBAf8EBTAD
+    AQH/MBkGA1UdEQQSMBCCDnJlZ2lzdHJ5LmxvY2FsMA0GCSqGSIb3DQEBCwUAA4IC
+    AQCXfNAGejEydQOjD/am1LATRZ7fW0aLmCdDACWMUo0unfi6aZ1Ko2l+8ZJB9Eek
+    u+GgPqGyxUiSAvcwsdQff58nGj5C2PpYAX07I1R/3tKMJsbz5eMxBqMNtxx/seh+
+    Ufd68TerHBgc+DcpKF+l/B5ONuEE33u/Nb/XS16GTm71CUm69DCU1tDPsym9wugT
+    IglYwlMY/OVTWxxU0oCxXYjRlrLCe3HmyJ4EazPvFOWaJxABSvk/cr7+qrTUlLdR
+    5uacH8QeDmqZjKd4tyqWUi9/anYMatsP6raWfAEnef+COCslnH8+4JoPzVAw760p
+    5VQOUmeAz11YSFMaKt/LDU4YSLy9HTq8RwYWGwRvKz3+d3xyRFXd8YSSv3FYy3q9
+    k7dKNOAKw+YA+LmInJjr+Bu55fFyELTMnhhvkdvSyLUZU2g0klOLGfWAGf1Ovs5P
+    a7Bktf7ExhcpcfxoZXbyqhCHyXYpCYuR8+7ehebgOUhitPrIZiSkGYScpQzkCsXe
+    ioN208v5eHF7LfTPLH9QDeXaNnVzuMJilpc6RXsXrOdnVB4FZIJjl0lo5e4kuNcJ
+    TPGxEHehmwJC9LYzwq5dvWpOwfDbAg2fxDcCB7Ch0vw31KgRPAOq8RvU6SoQl83W
+    OrWb2LvOgBf/Km8Zkv3GUqbp/p4WEMHlPw03PL9FRyDu0Q==
+    -----END CERTIFICATE-----
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: registry-local-cert-setup-script
+  namespace: kube-system
+data:
+  setup.sh: |
+    echo "$TRUSTED_CERT" > /usr/local/share/ca-certificates/registry_local.crt && update-ca-certificates && systemctl restart containerd
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: kube-system
+  name: node-registry-local-cert-setup
+  labels:
+    k8s-app: node-registry-local-cert-setup
+spec:
+  selector:
+    matchLabels:
+      k8s-app: node-registry-local-cert-setup
+  template:
+    metadata:
+      labels:
+        k8s-app: node-registry-local-cert-setup
+    spec:
+      hostPID: true
+      hostNetwork: true
+      initContainers:
+      - name: init-node
+        command: ["nsenter"]
+        args: ["--mount=/proc/1/ns/mnt", "--", "sh", "-c", "$(SETUP_TRUSTED_CERT_SCRIPT)"]
+        image: ubuntu
+        env:
+        - name: TRUSTED_CERT
+          valueFrom:
+            configMapKeyRef:
+              name: registry-local-crt
+              key: registry_local.crt
+        - name: SETUP_TRUSTED_CERT_SCRIPT
+          valueFrom:
+            configMapKeyRef:
+              name: registry-local-cert-setup-script
+              key: setup.sh
+        securityContext:
+          privileged: true
+      containers:
+      - name: wait
+        image: k8s.gcr.io/pause:3.1

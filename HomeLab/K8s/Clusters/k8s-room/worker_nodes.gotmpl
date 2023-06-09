@@ -1,0 +1,15 @@
+{{- range .items }}
+  {{- $taints:="" }}
+  {{- range .spec.taints }}
+    {{- if eq .effect "NoSchedule" }}
+      {{- $taints = print $taints .key "," }}
+    {{- end }}
+  {{- end }}
+  {{- if not $taints }}
+    {{- range.status.addresses}}
+      {{- if eq .type "InternalIP"}}
+        {{- .address}}{{ " " }}
+      {{- end }}
+    {{- end}}
+  {{- end }}
+{{- end }}
