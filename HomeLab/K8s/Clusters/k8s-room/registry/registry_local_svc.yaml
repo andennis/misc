@@ -6,6 +6,7 @@ metadata:
 spec:
   selector:
     app: registry-local
+  clusterIP: 10.233.54.43
   ports:
   - port: 443
     targetPort: 5000
