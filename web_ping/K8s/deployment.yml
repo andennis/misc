@@ -22,7 +22,7 @@ spec:
       containers:
       - name: web-ping-pod
 #        image: andennis/web-ping:1.1
-        image: registry.local/web-ping:1.2
+        image: registry.local/web-ping:1.3.1
         ports:
         - containerPort: 5000
       imagePullSecrets:
