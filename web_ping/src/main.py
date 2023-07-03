@@ -8,7 +8,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-WEB_PING_VERSION = '1.3'
+WEB_PING_VERSION = '1.3.1'
 
 
 @app.route('/')
