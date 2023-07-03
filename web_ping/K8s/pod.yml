@@ -8,9 +8,9 @@ metadata:
 spec:
   containers:
     - name: web-ping
-      image: andennis/web-ping:1.1
-#      image: docker-registry-andn.local/web-ping:1.1
+#      image: andennis/web-ping:1.1
+      image: registry.local/web-ping:1.2
       ports:
         - containerPort: 5000
   imagePullSecrets:
-    - name: dr-andn-cred-secret
+    - name: registry-local-client

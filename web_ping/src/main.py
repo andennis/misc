@@ -8,7 +8,7 @@ from flask import Flask
 
 app = Flask(__name__)
 
-WEB_PING_VERSION = '1.1'
+WEB_PING_VERSION = '1.2'
 
 
 @app.route('/')
@@ -33,6 +33,9 @@ def get_info():
         'OS': {
             'platform': platform.platform(),
             'version': platform.version()
+        },
+        'kubernetes': {
+            'pod_name': _get_pod_name()
         }
     }
     return data
@@ -63,6 +66,11 @@ def _get_cpus():
         'total_usage': psutil.cpu_percent(),
         'cores_usage': core_usage
     }
+
+
+def _get_pod_name():
+    """Get the current pod name."""
+    return os.getenv("HOSTNAME", 'N/A')
 
 
 if __name__ == '__main__':
