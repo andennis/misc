@@ -27,7 +27,7 @@ spec:
         paths:
           - backend:
               service:
-                name: httpd-svc
+                name: web-andennis
                 port:
                   number: 80
             path: /
@@ -37,7 +37,7 @@ spec:
         paths:
           - backend:
               service:
-                name: httpd-svc
+                name: web-andennis
                 port:
                   number: 80
             path: /
