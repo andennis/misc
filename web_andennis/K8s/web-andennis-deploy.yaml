@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-andennis
+  namespace: default
+  labels:
+    app: web-andennis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-andennis
+  template:
+    metadata:
+      labels:
+        app: web-andennis
+    spec:
+      containers:
+        - name: web-andennis
+          image: registry.local/web-andennis:1.0.3
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: registry-local-client
