@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql
+  template:
+    metadata:
+      labels:
+        app: postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: registry.local/postgres:15.3
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgresql-creds
+          volumeMounts:
+            - mountPath: /var/lib/postgres/data
+              name: db-data
+      imagePullSecrets:
+        - name: registry-local-client
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: postgresql
