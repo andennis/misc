@@ -15,17 +15,28 @@ spec:
       containers:
         - name: pgadmin4
           image: registry.local/pgadmin4:7.4
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
           env:
            - name: PGADMIN_DEFAULT_EMAIL
-             value: "admin@admin.com"
+             value: "admin@andennis.com"
            - name: PGADMIN_DEFAULT_PASSWORD
-             valueFrom:
-               secretKeyRef:
-                 name: pgadmin
-                 key: pgadmin-default-password
+             value: admin
            - name: PGADMIN_PORT
              value: "80"
           ports:
             - containerPort: 80
+      initContainers:
+        - name: pgadmin-permission-fix
+          image: alpine
+          args: [ "sh", "-c", "chown 5050:5050 /var/lib/pgadmin " ]
+          volumeMounts:
+            - name: pgadmin-data
+              mountPath: /var/lib/pgadmin
       imagePullSecrets:
         - name: registry-local-client
+      volumes:
+        - name: pgadmin-data
+          persistentVolumeClaim:
+            claimName: pgadmin

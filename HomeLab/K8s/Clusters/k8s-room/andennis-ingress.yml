@@ -9,6 +9,7 @@ spec:
   - hosts:
       - andennis.com
       - ping.andennis.com
+      - pgadmin.andennis.com
       - "*.andennis.com"
     secretName: andennis.com-tls
   rules:
@@ -20,6 +21,16 @@ spec:
                 name: web-ping-cl
                 port:
                   number: 8080
+            path: /
+            pathType: Prefix
+    - host: pgadmin.andennis.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: pgadmin
+                port:
+                  number: 80
             path: /
             pathType: Prefix
     - host: '*.andennis.com'

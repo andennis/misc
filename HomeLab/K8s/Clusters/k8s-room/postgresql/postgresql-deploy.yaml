@@ -17,9 +17,13 @@ spec:
           image: registry.local/postgres:15.3
           ports:
             - containerPort: 5432
-          envFrom:
-            - configMapRef:
-                name: postgresql-creds
+          env:
+           - name: POSTGRES_USER
+             value: admin
+           - name: POSTGRES_PASSWORD
+             value: admin
+           - name: POSTGRES_DB
+             value: postgres
           volumeMounts:
             - mountPath: /var/lib/postgres/data
               name: db-data
