@@ -1,0 +1,9 @@
+apiVersion: v1
+stringData:
+  DB_CONNECTION_STRING: postgres://mattermost:<password>@postgresql.default.svc.cluster.local:5432/mattermost?connect_timeout=10&sslmode=disable
+  DB_CONNECTION_CHECK_URL: postgres://mattermost:<password>@postgresql.default.svc.cluster.local:5432/mattermost?connect_timeout=10&sslmode=disable
+kind: Secret
+metadata:
+  name: mattermost-db
+  namespace: mattermost
+type: Opaque

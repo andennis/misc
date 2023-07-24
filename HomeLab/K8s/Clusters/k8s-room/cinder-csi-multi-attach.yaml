@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: cinder-csi-db
+  name: cinder-csi-multi-attach
 parameters:
   type: multi-attach
 provisioner: cinder.csi.openstack.org

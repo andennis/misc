@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pgadmin
+  namespace: default
 spec:
   selector:
    matchLabels:
@@ -27,13 +28,15 @@ spec:
              value: "80"
           ports:
             - containerPort: 80
-      initContainers:
-        - name: pgadmin-permission-fix
-          image: alpine
-          args: [ "sh", "-c", "chown 5050:5050 /var/lib/pgadmin " ]
-          volumeMounts:
-            - name: pgadmin-data
-              mountPath: /var/lib/pgadmin
+      securityContext:
+        fsGroup: 5050
+#      initContainers:
+#        - name: pgadmin-permission-fix
+#          image: alpine
+#          args: [ "sh", "-c", "chown 5050:5050 /var/lib/pgadmin " ]
+#          volumeMounts:
+#            - name: pgadmin-data
+#              mountPath: /var/lib/pgadmin
       imagePullSecrets:
         - name: registry-local-client
       volumes:
