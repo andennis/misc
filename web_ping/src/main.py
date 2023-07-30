@@ -4,11 +4,11 @@ import platform
 
 import psutil
 import uptime
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
-WEB_PING_VERSION = '1.3.1'
+WEB_PING_VERSION = '1.3.5'
 
 
 @app.route('/')
@@ -44,9 +44,39 @@ def get_info():
         },
         'kubernetes': {
             'pod_name': _get_pod_name() or 'N/A'
+        },
+        'client': {
+            # 'ip': get_client_ip(),
+            'REMOTE_ADDR': request.environ.get('REMOTE_ADDR'),
+            'HTTP_X_REAL_IP': request.environ.get('HTTP_X_REAL_IP'),
+            'HTTP_X_FORWARDED_FOR': request.environ.get('HTTP_X_FORWARDED_FOR')
         }
     }
     return data
+
+
+def get_client_ip():
+    # return request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    return request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+
+
+# @app.route('/log')
+# def log(rows_number=20):
+#     data = get_log(rows_number)
+#     return _render_list(data)
+
+
+# def _render_list(data):
+#     return "\n".join([json.dumps(d) for d in data])
+
+
+# def _write_log_to_db():
+#     conn = psycopg2.connect(
+#         host="localhost",
+#         database="suppliers",
+#         user="postgres",
+#         password="Abcd1234")
+#     return
 
 
 def _get_mem():

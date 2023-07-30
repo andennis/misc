@@ -3,13 +3,12 @@ kind: Service
 metadata:
   namespace: default
   name: web-ping-lb
+  annotations:
+    loadbalancer.openstack.org/x-forwarded-for: "True"
 spec:
   type: LoadBalancer
-#  externalIPs:
-#    - 192.168.2.101
   ports:
   - port: 8080
     targetPort: 5000
-#    nodePort: 31111
   selector:
     project: web-ping

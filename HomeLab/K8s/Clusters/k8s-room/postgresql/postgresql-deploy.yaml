@@ -25,6 +25,8 @@ spec:
              value: admin
            - name: POSTGRES_DB
              value: postgres
+           - name: PGDATA
+             value: /var/lib/postgres/data
           volumeMounts:
             - mountPath: /var/lib/postgres/data
               name: db-data
