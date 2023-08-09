@@ -10,7 +10,7 @@ spec:
       - andennis.com
       - ping.andennis.com
       - pgadmin.andennis.com
-      - "*.andennis.com"
+      - www.andennis.com
     secretName: andennis.com-tls
   rules:
     - host: ping.andennis.com
@@ -33,7 +33,7 @@ spec:
                   number: 80
             path: /
             pathType: Prefix
-    - host: '*.andennis.com'
+    - host: www.andennis.com
       http:
         paths:
           - backend:
