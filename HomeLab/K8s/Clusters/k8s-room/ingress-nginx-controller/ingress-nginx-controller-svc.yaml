@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    # When a Service of type LoadBalancer is created without further configuration it gets an ephemeral IP address
+    # from the IP pool of the external network of the cluster.
+    # Deleting the Service also releases that floating IP again into the pool, and it becomes available for others.
+    # There are no guarantees that the IP will still be available afterwards.
+    # To retain a floating IP in your OpenStack project even when the Service gets deleted,
+    # set the loadbalancer.openstack.org/keep-floatingip: "true" annotation.
+    loadbalancer.openstack.org/keep-floatingip: 'true'
+    # Enable PROXY protocol to receive client's real IP address
+    loadbalancer.openstack.org/proxy-protocol: 'true'
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.8.0
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  externalTrafficPolicy: Local
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - appProtocol: http
+    name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  - appProtocol: https
+    name: https
+    port: 443
+    protocol: TCP
+    targetPort: https
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+  type: LoadBalancer
+  # To reuse the floating IP afterwards, specify it in the spec.loadBalancerIP field
+  # The specified floating IP must exist
+  # loadBalancerIP: 192.168.2.119

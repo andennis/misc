@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.8.0
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+data:
+  allow-snippet-annotations: "true"
+  # Enables the PROXY protocol to receive client's real IP address
+  use-proxy-protocol: 'true'
