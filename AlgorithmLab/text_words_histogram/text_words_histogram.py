@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 
-def calc_words(text):
+def calc_words(text: str) -> defaultdict[int]:
     counter = defaultdict(int)
     words = text.split()
     for wrd in words:
