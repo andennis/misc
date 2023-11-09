@@ -1,3 +1,4 @@
+# Delete a node from a singly-linked list, ↴ given only a variable pointing to that node.
 class LinkedListNode(object):
 
     def __init__(self, value, next_node=None):
