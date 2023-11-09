@@ -30,6 +30,8 @@ def max_duffel_bag_value(cake_tuples, capacity):
         max_value = 0
         rest_of_capacity = capacity - total_capacity
         for cake_size, cake_val in cake_tuples:
+            if cake_size == 0:
+                continue
             cakes_in_bag = rest_of_capacity // cake_size
             if cakes_in_bag == 0:
                 continue
