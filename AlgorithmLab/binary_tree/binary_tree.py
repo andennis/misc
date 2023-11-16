@@ -61,7 +61,7 @@ class TreeNodeTraversal:
                     continue
 
             i = len(self.nodes) - 1 - self.nodes[::-1].index(cur_node)
-            cur_node = self.nodes[i-1]
+            cur_node = self.nodes[i - 1]
 
             # The left traversed nodes can be removed as right traversal is going to be performed
             if cur_node == root and self._can_right_node_be_traversed(cur_node):
@@ -96,7 +96,7 @@ class TreeNodeTraversal:
                 self.inorder_nodes.append(cur_node)
 
             i = len(self.nodes) - 1 - self.nodes[::-1].index(cur_node)
-            cur_node = self.nodes[i-1]
+            cur_node = self.nodes[i - 1]
 
             # The left traversed nodes can be removed as right traversal is going to be performed
             if cur_node == root and self._can_right_node_be_traversed(cur_node):
@@ -112,3 +112,21 @@ class TreeNodeTraversal:
 
     def _can_right_node_be_traversed(self, node: TreeNode):
         return node.right is not None and node.right not in self.nodes
+
+    def level_order_traversal(self, root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+        node_values = []
+        self._get_level_nodes(root, 0, node_values)
+        return node_values
+
+    @classmethod
+    def _get_level_nodes(cls, root: Optional[TreeNode], level: int, node_vals: List[List[int]]):
+        if not root:
+            return
+        if level >= len(node_vals):
+            node_vals.append([])
+        node_vals[level].append(root.val)
+
+        cls._get_level_nodes(root.left, level + 1, node_vals)
+        cls._get_level_nodes(root.right, level + 1, node_vals)
