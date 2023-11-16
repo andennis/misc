@@ -90,3 +90,52 @@ def test_preorder_traversal(root, result):
 ])
 def test_inorder_traversal(root, result):
     assert TreeNodeTraversal().inorder_traversal(root) == result
+
+
+@pytest.mark.parametrize("root, result", [
+    (None, []),
+    (TreeNode(1), [1]),
+    (TreeNode(1, left=TreeNode(2)), [2, 1]),
+    (TreeNode(1, left=TreeNode(2), right=TreeNode(3)), [2, 3, 1]),
+    (TreeNode(1, left=None, right=TreeNode(3)), [3, 1]),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3,
+                             left=TreeNode(4),
+                             right=TreeNode(5)
+                             )
+              ),
+     [2, 4, 5, 3, 1]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(3),
+                            right=TreeNode(4)),
+              right=TreeNode(5)
+              ),
+     [3, 4, 2, 5, 1]),
+    (TreeNode(1, left=None, right=TreeNode(3, left=TreeNode(4))), [4, 3, 1]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4,
+                                          left=TreeNode(8,
+                                                        right=TreeNode(12,
+                                                                       left=TreeNode(16),
+                                                                       right=TreeNode(17)))),
+                            right=TreeNode(5,
+                                           right=TreeNode(9,
+                                                          left=TreeNode(13)))),
+              right=TreeNode(3,
+                             left=TreeNode(6,
+                                           right=TreeNode(10,
+                                                          left=TreeNode(14))),
+                             right=TreeNode(7,
+                                            left=TreeNode(11,
+                                                          right=TreeNode(15)
+                                                          )
+                                            )
+                             )
+              ),
+     [16, 17, 12, 8, 4, 13, 9, 5, 2, 14, 10, 6, 15, 11, 7, 3, 1])
+])
+def test_postorder_traversal(root, result):
+    assert TreeNodeTraversal().postorder_traversal(root) == result

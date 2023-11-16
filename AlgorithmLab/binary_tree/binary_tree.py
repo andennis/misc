@@ -63,12 +63,47 @@ class TreeNodeTraversal:
             i = len(self.nodes) - 1 - self.nodes[::-1].index(cur_node)
             cur_node = self.nodes[i-1]
 
-            # Remove all the traversed left nodes except the first one
+            # The left traversed nodes can be removed as right traversal is going to be performed
             if cur_node == root and self._can_right_node_be_traversed(cur_node):
                 self.nodes = [root] + [root.left] if root.left else []
 
         if root not in self.inorder_nodes:
             self.inorder_nodes.append(root)
+
+        return [v.val for v in self.inorder_nodes]
+
+    def postorder_traversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+
+        self.nodes = [root]
+        self.inorder_nodes = []
+        cur_node = root
+        while cur_node != root \
+                or self._can_left_node_be_traversed(cur_node) \
+                or self._can_right_node_be_traversed(cur_node):
+
+            if self._can_left_node_be_traversed(cur_node):
+                cur_node = cur_node.left
+                self.nodes.append(cur_node)
+                continue
+            if self._can_right_node_be_traversed(cur_node):
+                cur_node = cur_node.right
+                self.nodes.append(cur_node)
+                continue
+
+            if cur_node not in self.inorder_nodes:
+                self.inorder_nodes.append(cur_node)
+
+            i = len(self.nodes) - 1 - self.nodes[::-1].index(cur_node)
+            cur_node = self.nodes[i-1]
+
+            # The left traversed nodes can be removed as right traversal is going to be performed
+            if cur_node == root and self._can_right_node_be_traversed(cur_node):
+                self.nodes = [root] + [root.left] if root.left else []
+
+        # The 'while' circle above does not add root node. So, it must be added here
+        self.inorder_nodes.append(root)
 
         return [v.val for v in self.inorder_nodes]
 
