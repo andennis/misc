@@ -189,3 +189,56 @@ def test_postorder_traversal(root, result):
 def test_level_order_traversal_recursively(root, result):
     assert TreeNodeTraversal().level_order_traversal_recursively(root) == result
     assert TreeNodeTraversal.level_order_traversal_by_queue(root) == result
+
+
+@pytest.mark.parametrize("root, result", [
+    (None, 0),
+    (TreeNode(1), 1),
+    (TreeNode(1, left=TreeNode(2)), 2),
+    (TreeNode(1, left=TreeNode(2), right=TreeNode(3)), 2),
+    (TreeNode(1, left=None, right=TreeNode(3)), 2),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3,
+                             left=TreeNode(4),
+                             right=TreeNode(5)
+                             )
+              ),
+     3),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(3),
+                            right=TreeNode(4)),
+              right=TreeNode(5)
+              ),
+     3),
+    (TreeNode(1,
+              left=None,
+              right=TreeNode(3,
+                             left=TreeNode(4))),
+     3),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4,
+                                          left=TreeNode(8,
+                                                        right=TreeNode(12,
+                                                                       left=TreeNode(16),
+                                                                       right=TreeNode(17)))),
+                            right=TreeNode(5,
+                                           right=TreeNode(9,
+                                                          left=TreeNode(13)))),
+              right=TreeNode(3,
+                             left=TreeNode(6,
+                                           right=TreeNode(10,
+                                                          left=TreeNode(14))),
+                             right=TreeNode(7,
+                                            left=TreeNode(11,
+                                                          right=TreeNode(15)
+                                                          )
+                                            )
+                             )
+              ),
+     6)
+])
+def test_max_depth(root, result):
+    assert TreeNodeTraversal().max_depth(root) == result
