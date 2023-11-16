@@ -186,5 +186,6 @@ def test_postorder_traversal(root, result):
               ),
      [[1], [2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], [16, 17]])
 ])
-def test_level_order_traversal(root, result):
-    assert TreeNodeTraversal().level_order_traversal(root) == result
+def test_level_order_traversal_recursively(root, result):
+    assert TreeNodeTraversal().level_order_traversal_recursively(root) == result
+    assert TreeNodeTraversal.level_order_traversal_by_queue(root) == result

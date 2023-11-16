@@ -113,7 +113,7 @@ class TreeNodeTraversal:
     def _can_right_node_be_traversed(self, node: TreeNode):
         return node.right is not None and node.right not in self.nodes
 
-    def level_order_traversal(self, root: Optional[TreeNode]) -> List[List[int]]:
+    def level_order_traversal_recursively(self, root: Optional[TreeNode]) -> List[List[int]]:
         if not root:
             return []
         node_values = []
@@ -130,3 +130,25 @@ class TreeNodeTraversal:
 
         cls._get_level_nodes(root.left, level + 1, node_vals)
         cls._get_level_nodes(root.right, level + 1, node_vals)
+
+    @staticmethod
+    def level_order_traversal_by_queue(root: Optional[TreeNode]) -> List[List[int]]:
+        if not root:
+            return []
+
+        nodes = [root]
+        level = 0
+        nodes_vals = []
+        while nodes:
+            level_nodes_num = len(nodes)
+            nodes_vals.append([])
+            for i in range(level_nodes_num):
+                node = nodes.pop(0)
+                nodes_vals[level].append(node.val)
+                if node.left:
+                    nodes.append(node.left)
+                if node.right:
+                    nodes.append(node.right)
+            level += 1
+
+        return nodes_vals
