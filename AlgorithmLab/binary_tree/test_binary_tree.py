@@ -1,4 +1,5 @@
 import pytest
+from typing import List
 from binary_tree import TreeNodeTraversal, TreeNode
 
 
@@ -321,3 +322,33 @@ def test_is_symmetric(root, result):
 ])
 def test_has_path_sum(root, target_sum, result):
     assert TreeNodeTraversal().has_path_sum(root, target_sum) == result
+
+
+@pytest.mark.parametrize("root, result", [
+    (None, []),
+    (TreeNode(1), [1]),
+    (TreeNode(1, left=TreeNode(0)), [1, 0, None]),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)
+              ),
+     [1, 2, 3]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            right=TreeNode(4)
+                            ),
+              right=TreeNode(3,
+                             left=TreeNode(5)
+                             )
+              ),
+     [1, 2, 3, None,  4, 5, None])
+])
+def test_tree_to_list(root, result):
+    assert TreeNodeTraversal().tree_to_list(root) == result
+
+
+@pytest.mark.parametrize("inorder, postorder, result", [
+    ([9, 3, 15, 20, 7], [9, 15, 7, 20, 3], [3, 9, 20, None, None, 15, 7])
+])
+def test_build_tree(inorder: List[int], postorder: List[int], result: List[int]):
+    pass

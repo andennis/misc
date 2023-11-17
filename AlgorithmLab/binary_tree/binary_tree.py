@@ -217,3 +217,20 @@ class TreeNodeTraversal:
         if self._calc_path(root.left, target_sum, cur_sum):
             return True
         return self._calc_path(root.right, target_sum, cur_sum)
+
+    def tree_to_list(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        nodes = [root]
+        result = []
+        while nodes:
+            level_len = len(nodes)
+            for _ in range(level_len):
+                node = nodes.pop(0)
+                result.append(node.val if node else None)
+                if node and (node.left or node.right):
+                    nodes.extend([node.left, node.right])
+        return result
+
+    def build_tree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        pass
