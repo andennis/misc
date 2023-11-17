@@ -203,3 +203,17 @@ class TreeNodeTraversal:
         self._get_symmetric_level_nodes(root.left, level + 1, nodes)
         self._get_symmetric_level_nodes(root.right, level + 1, nodes)
 
+    def has_path_sum(self, root: Optional[TreeNode], target_sum: int) -> bool:
+        return self._calc_path(root, target_sum, 0)
+
+    def _calc_path(self, root: Optional[TreeNode], target_sum, cur_sum) -> bool:
+        if not root:
+            return False
+
+        cur_sum += root.val
+        if root.left is None and root.right is None:
+            return cur_sum == target_sum
+
+        if self._calc_path(root.left, target_sum, cur_sum):
+            return True
+        return self._calc_path(root.right, target_sum, cur_sum)

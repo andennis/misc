@@ -260,11 +260,6 @@ def test_max_depth(root, result):
               ),
      False),
     (TreeNode(1,
-              left=TreeNode(2),
-              right=TreeNode(3)
-              ),
-     False),
-    (TreeNode(1,
               left=TreeNode(2,
                             left=TreeNode(3),
                             right=TreeNode(4)
@@ -288,3 +283,41 @@ def test_max_depth(root, result):
 def test_is_symmetric(root, result):
     assert TreeNodeTraversal().is_symmetric_iteratively(root) == result
     assert TreeNodeTraversal().is_symmetric_recursively(root) == result
+
+
+@pytest.mark.parametrize("root, target_sum, result", [
+    (None, 1, False),
+    (TreeNode(1), 2, False),
+    (TreeNode(1), 1, True),
+    (TreeNode(1, left=TreeNode(0)), 1, True),
+    (TreeNode(1, left=TreeNode(2)), 1, False),
+    (TreeNode(-2, right=TreeNode(-3)), -5, True),
+    (TreeNode(-2, right=TreeNode(-3, left=TreeNode(5))), 0, True),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)
+              ),
+     4, True),
+    (TreeNode(1,
+              right=TreeNode(6,
+                             left=TreeNode(4))
+              ),
+     8, False),
+    (TreeNode(1,
+              right=TreeNode(6,
+                             left=TreeNode(4))
+              ),
+     7, False),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(3),
+                            right=TreeNode(4)
+                            ),
+              right=TreeNode(2,
+                             right=TreeNode(7)
+                             )
+              ),
+     10, True)
+])
+def test_has_path_sum(root, target_sum, result):
+    assert TreeNodeTraversal().has_path_sum(root, target_sum) == result
