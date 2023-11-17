@@ -132,7 +132,7 @@ class TreeNodeTraversal:
         cls._get_level_nodes(root.right, level + 1, node_vals)
 
     @staticmethod
-    def level_order_traversal_by_queue(root: Optional[TreeNode]) -> List[List[int]]:
+    def level_order_traversal_iteratively(root: Optional[TreeNode]) -> List[List[int]]:
         if not root:
             return []
 
@@ -142,7 +142,7 @@ class TreeNodeTraversal:
         while nodes:
             level_nodes_num = len(nodes)
             nodes_vals.append([])
-            for i in range(level_nodes_num):
+            for _ in range(level_nodes_num):
                 node = nodes.pop(0)
                 nodes_vals[level].append(node.val)
                 if node.left:
@@ -159,3 +159,23 @@ class TreeNodeTraversal:
         left_depth = self.max_depth(root.left)
         right_depth = self.max_depth(root.right)
         return max(left_depth, right_depth) + 1
+
+    def is_symmetric_iteratively(self, root: Optional[TreeNode]) -> bool:
+        if not root:
+            return False
+        nodes = [root]
+        while nodes:
+            level_nodes_num = len(nodes)
+            for i in range(level_nodes_num // 2):
+                left_val = nodes[i].val if nodes[i] else None
+                right_val = nodes[-(i+1)].val if nodes[-(i+1)] else None
+                if left_val != right_val:
+                    return False
+
+            for i in range(level_nodes_num):
+                node = nodes.pop(0)
+                if node:
+                    nodes.append(node.left)
+                    nodes.append(node.right)
+
+        return True

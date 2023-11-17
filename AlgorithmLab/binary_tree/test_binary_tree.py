@@ -188,7 +188,7 @@ def test_postorder_traversal(root, result):
 ])
 def test_level_order_traversal_recursively(root, result):
     assert TreeNodeTraversal().level_order_traversal_recursively(root) == result
-    assert TreeNodeTraversal.level_order_traversal_by_queue(root) == result
+    assert TreeNodeTraversal.level_order_traversal_iteratively(root) == result
 
 
 @pytest.mark.parametrize("root, result", [
@@ -242,3 +242,48 @@ def test_level_order_traversal_recursively(root, result):
 ])
 def test_max_depth(root, result):
     assert TreeNodeTraversal().max_depth(root) == result
+
+
+@pytest.mark.parametrize("root, result", [
+    (None, False),
+    (TreeNode(1), True),
+    (TreeNode(1, left=TreeNode(0)), False),
+    (TreeNode(1, left=TreeNode(2)), False),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(2)
+              ),
+     True),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)
+              ),
+     False),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)
+              ),
+     False),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(3),
+                            right=TreeNode(4)
+                            ),
+              right=TreeNode(2,
+                             left=TreeNode(4),
+                             right=TreeNode(3)
+                             )
+              ),
+     True),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            right=TreeNode(3)
+                            ),
+              right=TreeNode(2,
+                             right=TreeNode(3)
+                             )
+              ),
+     False)
+])
+def test_is_symmetric(root, result):
+    assert TreeNodeTraversal().is_symmetric_iteratively(root) == result
