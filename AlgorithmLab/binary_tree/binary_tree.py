@@ -117,19 +117,19 @@ class TreeNodeTraversal:
         if not root:
             return []
         node_values = []
-        self._get_level_nodes(root, 0, node_values)
+        self._get_level_node_values(root, 0, node_values)
         return node_values
 
     @classmethod
-    def _get_level_nodes(cls, root: Optional[TreeNode], level: int, node_vals: List[List[int]]):
+    def _get_level_node_values(cls, root: Optional[TreeNode], level: int, node_vals: List[List[int]]):
         if not root:
             return
         if level >= len(node_vals):
             node_vals.append([])
         node_vals[level].append(root.val)
 
-        cls._get_level_nodes(root.left, level + 1, node_vals)
-        cls._get_level_nodes(root.right, level + 1, node_vals)
+        cls._get_level_node_values(root.left, level + 1, node_vals)
+        cls._get_level_node_values(root.right, level + 1, node_vals)
 
     @staticmethod
     def level_order_traversal_iteratively(root: Optional[TreeNode]) -> List[List[int]]:
@@ -179,3 +179,27 @@ class TreeNodeTraversal:
                     nodes.append(node.right)
 
         return True
+
+    def is_symmetric_recursively(self, root: Optional[TreeNode]) -> bool:
+        if not root:
+            return False
+        levels = []
+        self._get_symmetric_level_nodes(root, 0, levels)
+        for nodes in levels:
+            for i in range(len(nodes) // 2):
+                left_val = nodes[i].val if nodes[i] else None
+                right_val = nodes[-(i+1)].val if nodes[-(i+1)] else None
+                if left_val != right_val:
+                    return False
+        return True
+
+    def _get_symmetric_level_nodes(self, root: Optional[TreeNode], level, nodes):
+        if not root:
+            return
+        if level >= len(nodes):
+            nodes.append([])
+
+        nodes[level].extend([root.left, root.right])
+        self._get_symmetric_level_nodes(root.left, level + 1, nodes)
+        self._get_symmetric_level_nodes(root.right, level + 1, nodes)
+

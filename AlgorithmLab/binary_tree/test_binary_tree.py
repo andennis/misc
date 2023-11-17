@@ -287,3 +287,4 @@ def test_max_depth(root, result):
 ])
 def test_is_symmetric(root, result):
     assert TreeNodeTraversal().is_symmetric_iteratively(root) == result
+    assert TreeNodeTraversal().is_symmetric_recursively(root) == result
