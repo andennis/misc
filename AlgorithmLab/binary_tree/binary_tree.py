@@ -218,19 +218,91 @@ class TreeNodeTraversal:
             return True
         return self._calc_path(root.right, target_sum, cur_sum)
 
-    def tree_to_list(self, root: TreeNode) -> List[int]:
+    @staticmethod
+    def tree_to_level_list(root: TreeNode) -> List[int]:
         if not root:
             return []
         nodes = [root]
         result = []
-        while nodes:
+        while any(nodes):
             level_len = len(nodes)
             for _ in range(level_len):
                 node = nodes.pop(0)
                 result.append(node.val if node else None)
-                if node and (node.left or node.right):
+                if node:
                     nodes.extend([node.left, node.right])
         return result
 
     def build_tree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
-        pass
+        if not inorder or not postorder:
+            return None
+
+        i_in = 0
+        in_vals = inorder.copy()
+        post_vals = postorder.copy()
+        self.nodes = []
+        while i_in < len(in_vals) > 1:
+            ln = len(in_vals)
+            if in_vals[i_in] == post_vals[0]:
+                if i_in + 1 < ln \
+                        and in_vals[i_in+1] == post_vals[1]:
+                    self._get_node(in_vals[i_in+1], left_val=in_vals[i_in])
+                    del in_vals[i_in:i_in+1]
+                    del post_vals[0:1]
+                elif i_in + 2 < ln \
+                        and in_vals[i_in+1] == post_vals[2] \
+                        and in_vals[i_in+2] == post_vals[1]:
+                    node = self._get_node(in_vals[i_in+1], left_val=in_vals[i_in], right_val=in_vals[i_in+2])
+                    del in_vals[i_in:i_in+2]
+                    del post_vals[0:2]
+                    in_vals[i_in] = node.val
+                elif i_in + 1 < ln:
+                    self._get_node(in_vals[i_in+1], left_val=in_vals[i_in])
+                    del in_vals[i_in:i_in+1]
+                    del post_vals[0:1]
+                else:
+                    raise Exception('inconsistent data')
+                i_in = 0
+            elif in_vals[i_in] == post_vals[1] \
+                    and in_vals[i_in+1] == post_vals[0] and i_in + 1 < ln:
+                self._get_node(in_vals[i_in], right_val=in_vals[i_in + 1])
+                del in_vals[i_in+1:i_in+2]
+                del post_vals[0:1]
+                i_in = 0
+            else:
+                i_in += 1
+
+        return self._get_node(in_vals[0])
+
+    def _get_node(
+            self,
+            root_val: int,
+            left_val: Optional[int] = None,
+            right_val: Optional[int] = None
+    ) -> Optional[TreeNode]:
+        if not root_val:
+            raise TypeError("The value root_val must nor be None")
+
+        left_node = None
+        if left_val:
+            left_node = next((x for x in self.nodes if x.val == left_val), None)
+            if not left_node:
+                left_node = TreeNode(left_val)
+                self.nodes.append(left_node)
+
+        right_node = None
+        if right_val:
+            right_node = next((x for x in self.nodes if x.val == right_val), None)
+            if not right_node:
+                right_node = TreeNode(right_val)
+                self.nodes.append(right_node)
+
+        root_node = next((x for x in self.nodes if x.val == root_val), None)
+        if not root_node:
+            root_node = TreeNode(root_val, left=left_node, right=right_node)
+            self.nodes.append(root_node)
+        else:
+            root_node.left = left_node or root_node.left
+            root_node.right = right_node or root_node.right
+
+        return root_node

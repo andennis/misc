@@ -341,14 +341,31 @@ def test_has_path_sum(root, target_sum, result):
                              left=TreeNode(5)
                              )
               ),
-     [1, 2, 3, None,  4, 5, None])
+     [1, 2, 3, None,  4, 5, None]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4)),
+              right=TreeNode(3)),
+     [1, 2, 3, 4, None, None, None])
 ])
 def test_tree_to_list(root, result):
-    assert TreeNodeTraversal().tree_to_list(root) == result
+    assert TreeNodeTraversal.tree_to_level_list(root) == result
 
 
 @pytest.mark.parametrize("inorder, postorder, result", [
-    ([9, 3, 15, 20, 7], [9, 15, 7, 20, 3], [3, 9, 20, None, None, 15, 7])
+    ([], [], []),
+    ([2, 1], [2, 1], [1, 2, None]),
+    ([1, 2], [2, 1], [1, None, 2]),
+    ([2, 1, 3], [2, 3, 1], [1, 2, 3]),
+    ([2, 1, 4, 3], [2, 4, 3, 1], [1, 2, 3, None, None, 4, None]),
+    ([2, 1, 3, 4], [2, 4, 3, 1], [1, 2, 3, None, None, None, 4]),
+    ([4, 2, 1, 3], [4, 2, 3, 1], [1, 2, 3, 4, None, None, None]),
+    ([2, 4, 1, 3], [4, 2, 3, 1], [1, 2, 3, None, 4, None, None]),
+    ([9, 3, 15, 20, 7], [9, 15, 7, 20, 3], [3, 9, 20, None, None, 15, 7]),
+    ([4, 11, 10, 2, 8, 6, 9, 5, 7, 1, 3, 13, 12], [11, 10, 4, 8, 9, 6, 7, 5, 2, 13, 12, 3, 1],
+     [1, 2, 3, 4, 5, None, 12, None, 10, 6, 7, 13, None, 11, None, 8, 9, None, None, None, None]
+     )
 ])
 def test_build_tree(inorder: List[int], postorder: List[int], result: List[int]):
-    pass
+    node = TreeNodeTraversal().build_tree(inorder, postorder)
+    assert TreeNodeTraversal.tree_to_level_list(node) == result
