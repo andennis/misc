@@ -230,7 +230,9 @@ class TreeNodeTraversal:
                 node = nodes.pop(0)
                 result.append(node.val if node else None)
                 if node:
-                    nodes.extend([node.left, node.right])
+                    #nodes.extend([node.left, node.right])
+                    nodes.append(node.left)
+                    nodes.append(node.right)
         return result
 
     def build_tree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
@@ -280,18 +282,18 @@ class TreeNodeTraversal:
             left_val: Optional[int] = None,
             right_val: Optional[int] = None
     ) -> Optional[TreeNode]:
-        if not root_val:
+        if root_val is None:
             raise TypeError("The value root_val must nor be None")
 
         left_node = None
-        if left_val:
+        if left_val is not None:
             left_node = next((x for x in self.nodes if x.val == left_val), None)
             if not left_node:
                 left_node = TreeNode(left_val)
                 self.nodes.append(left_node)
 
         right_node = None
-        if right_val:
+        if right_val is not None:
             right_node = next((x for x in self.nodes if x.val == right_val), None)
             if not right_node:
                 right_node = TreeNode(right_val)
