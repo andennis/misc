@@ -230,12 +230,10 @@ class TreeNodeTraversal:
                 node = nodes.pop(0)
                 result.append(node.val if node else None)
                 if node:
-                    #nodes.extend([node.left, node.right])
-                    nodes.append(node.left)
-                    nodes.append(node.right)
+                    nodes.extend([node.left, node.right])
         return result
 
-    def build_tree(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+    def build_tree_iteratively(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
         if not inorder or not postorder:
             return None
 
@@ -276,6 +274,26 @@ class TreeNodeTraversal:
 
         return self._get_node(in_vals[0])
 
+    def build_tree_recursively(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        return self._build_tree_recursively(None, inorder, postorder)
+
+    def _build_tree_recursively(self, node: Optional[TreeNode], inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        if not inorder or not postorder:
+            return node
+
+        if inorder[0] == postorder[0]:
+            return self._build_tree_recursively(TreeNode(inorder[0], left=node), inorder[1:], postorder[1:])
+
+        if inorder[0] == postorder[1] \
+                and inorder[1] == postorder[0]:
+            new_node = TreeNode(inorder[0], left=node, right=TreeNode(inorder[1]))
+            return self._build_tree_recursively(new_node, inorder[2:], postorder[2:])
+
+        i = postorder.index(inorder[0])
+        right_node = self._build_tree_recursively(None, inorder[1:], postorder[:i])
+        new_node = TreeNode(inorder[0], left=node, right=right_node)
+        return self._build_tree_recursively(new_node, inorder[i+1:], postorder[i+1:])
+
     def _get_node(
             self,
             root_val: int,
@@ -283,7 +301,7 @@ class TreeNodeTraversal:
             right_val: Optional[int] = None
     ) -> Optional[TreeNode]:
         if root_val is None:
-            raise TypeError("The value root_val must nor be None")
+            raise TypeError("The value root_val must not be None")
 
         left_node = None
         if left_val is not None:
@@ -308,3 +326,4 @@ class TreeNodeTraversal:
             root_node.right = right_node or root_node.right
 
         return root_node
+
