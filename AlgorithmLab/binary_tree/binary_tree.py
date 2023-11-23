@@ -338,16 +338,15 @@ class TreeNodeTraversal:
 
     @staticmethod
     def build_tree_recursively_v2(inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
-        ioMap = {val: i for i, val in enumerate(inorder)}
 
-        def buildTreeHelper(left, right):
-            if not postorder or left >= right:
+        def build(left, right):
+            if left > right:
                 return None
             node = TreeNode(postorder.pop())
-            index = ioMap[node.val]
-            node.right = buildTreeHelper(index+1, right)
-            node.left = buildTreeHelper(left, index)
+            i = maps[node.val]
+            node.right = build(i + 1, right)
+            node.left = build(left, i - 1)
             return node
 
-        return buildTreeHelper(0, len(inorder))
-
+        maps = {v: i for i, v in enumerate(inorder)}
+        return build(0, len(inorder) - 1)

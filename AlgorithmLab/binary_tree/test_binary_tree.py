@@ -392,3 +392,4 @@ def test_build_tree(inorder: List[int], postorder: List[int], result: List[int])
     node = TreeNodeTraversal.build_tree_recursively_v2(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
+
