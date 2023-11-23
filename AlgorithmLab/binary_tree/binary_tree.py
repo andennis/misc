@@ -12,6 +12,8 @@ class TreeNodeTraversal:
     def __init__(self):
         self.nodes = []
         self.inorder_nodes = []
+        self.inorder = []
+        self.postorder = []
 
     def preorder_traversal(self, root: Optional[TreeNode]) -> List[int]:
         if not root:
@@ -275,24 +277,35 @@ class TreeNodeTraversal:
         return self._get_node(in_vals[0])
 
     def build_tree_recursively(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
-        return self._build_tree_recursively(None, inorder, postorder)
+        self.inorder = inorder
+        self.postorder = postorder
+        return self._build_tree_recursively(None, 0, 0, len(inorder) - 1)
 
-    def _build_tree_recursively(self, node: Optional[TreeNode], inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
-        if not inorder or not postorder:
+    def _build_tree_recursively(self,
+                                node: Optional[TreeNode],
+                                in_i: int,
+                                post_i: int,
+                                post_last_i: int) -> Optional[TreeNode]:
+        if post_i > post_last_i:
             return node
 
-        if inorder[0] == postorder[0]:
-            return self._build_tree_recursively(TreeNode(inorder[0], left=node), inorder[1:], postorder[1:])
+        if self.inorder[in_i] == self.postorder[post_i]:
+            print(self.inorder[in_i])
+            return self._build_tree_recursively(TreeNode(self.inorder[in_i], left=node), in_i + 1, post_i + 1, post_last_i)
 
-        if inorder[0] == postorder[1] \
-                and inorder[1] == postorder[0]:
-            new_node = TreeNode(inorder[0], left=node, right=TreeNode(inorder[1]))
-            return self._build_tree_recursively(new_node, inorder[2:], postorder[2:])
+        if in_i+1 < len(self.inorder) \
+                and self.inorder[in_i] == self.postorder[post_i+1] \
+                and self.inorder[in_i+1] == self.postorder[post_i]:
+            print(self.inorder[in_i])
+            new_node = TreeNode(self.inorder[in_i], left=node, right=TreeNode(self.inorder[in_i+1]))
+            return self._build_tree_recursively(new_node, in_i + 2, post_i + 2, post_last_i)
 
-        i = postorder.index(inorder[0])
-        right_node = self._build_tree_recursively(None, inorder[1:], postorder[:i])
-        new_node = TreeNode(inorder[0], left=node, right=right_node)
-        return self._build_tree_recursively(new_node, inorder[i+1:], postorder[i+1:])
+        i = self.postorder.index(self.inorder[in_i])
+        print('Build subnodes for: {}'.format(self.inorder[in_i]))
+        right_node = self._build_tree_recursively(None, in_i+1, post_i, i-1)
+        print(self.inorder[in_i])
+        new_node = TreeNode(self.inorder[in_i], left=node, right=right_node)
+        return self._build_tree_recursively(new_node, in_i + i - post_i + 1, i + 1, post_last_i)
 
     def _get_node(
             self,
