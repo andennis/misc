@@ -382,14 +382,14 @@ def test_tree_to_list(root, result):
     #     [68,16,33,13,77,29,-12,25,None,-50,-58,24,76,93,-75,-80,98,-59,85,72,82,-5,66,9,-61,69,-78,-66,8,None,None,None,None,79,-49,-96,-36,55,None,84,None,96,28,57,-94,None,None,None,None,None,95,None,-84,None,None,73,52,None,None,None,None,-83,None,None,None,20,92,-46,67,None,None,36,65,-74,None,None,37,-44,-26,None,-17,99,7,-51,-53,None,6,None,None,23,None,14,19,83,4,None,None,-69,None,None,None,-88,0,-39,-65,None,2,None,None,-40,None,-57,26,12,-2,-28,-45,None,None,None,None,-6,-76,-37,-14,-24,49,-95,-98,35,None,None,18,None,None,None,3,90,None,None,None,None,None,None,None,None,-68,None,-8,-67,None,-91,None,-32,-62,None,None,None,None,41,88,-42,None,56,-13,34,53,11,61,-63,-43,None,None,None,None,None,None,None,None,None,None,None,62,None,-47,-77,71,-56,-33,70,-11,None,None,17,75,None,44,22,32,50,-71,60,-20,58,-89,21,-22,-48,-99,48,15,-97,51,None,46,None,None,None,-31,63,None,None,None,None,None,None,None,None,None,None,64,-52,None,-55,None,42,-7,-72,None,None,None,None,None,None,None,None,None,None,None,-4,27,-1,None,None,-92,None,-3,None,None,None,None,-30,None,-15,None,-64,None,None,None,-38,None,None,None,None,None,-85,30,None,-81,-10,5,None,-90,None,None,None,None,78,-54,None,None,40,89,-23,-19,-79,94,None,None,None,97,10,-93,-73,None,None,None,80,1,None,91,None,86,None,None,None,None,-21,None,81,None,-29,None,47,None,None,None,None,None,-70,-41,43,None,-86,None,None,-35,None,None,87,-27,None,None,-34,31,38,74,None,-16,None,None,None,None,None,None,54,None,-9,-82,None,None,None,None,None,45,None,None,59,None,-60,None,-87,None,-18,None,-25,None,None,None,-100,None,39]
     # )
 ])
-def test_build_tree(inorder: List[int], postorder: List[int], result: List[int]):
-    node = TreeNodeTraversal().build_tree_iteratively(inorder, postorder)
+def test_build_tree_using_inorder_and_preorder(inorder: List[int], postorder: List[int], result: List[int]):
+    node = TreeNodeTraversal().build_tree_inorder_preorder_iteratively(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
-    node = TreeNodeTraversal().build_tree_recursively_v1(inorder, postorder)
+    node = TreeNodeTraversal().build_tree_inorder_preorder_recursively_v1(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
-    node = TreeNodeTraversal.build_tree_recursively_v2(inorder, postorder)
+    node = TreeNodeTraversal.build_tree_inorder_preorder_recursively_v2(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
 

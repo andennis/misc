@@ -235,7 +235,7 @@ class TreeNodeTraversal:
                     nodes.extend([node.left, node.right])
         return result
 
-    def build_tree_iteratively(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+    def build_tree_inorder_preorder_iteratively(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
         if not inorder or not postorder:
             return None
 
@@ -309,7 +309,7 @@ class TreeNodeTraversal:
 
         return root_node
 
-    def build_tree_recursively_v1(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+    def build_tree_inorder_preorder_recursively_v1(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
         self.inorder = inorder
         self.postorder = postorder
         return self._build_tree_recursively(None, 0, 0, len(inorder) - 1)
@@ -337,7 +337,7 @@ class TreeNodeTraversal:
         return self._build_tree_recursively(new_node, in_i + i - post_i + 1, i + 1, post_last_i)
 
     @staticmethod
-    def build_tree_recursively_v2(inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+    def build_tree_inorder_preorder_recursively_v2(inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
 
         def build(left, right):
             if left > right:
