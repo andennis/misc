@@ -2,10 +2,11 @@ from typing import Optional, List
 
 
 class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
+    def __init__(self, val=0, left=None, right=None, next=None):
         self.val = val
         self.left = left
         self.right = right
+        self.next = next
 
 
 class TreeNodeTraversal:
@@ -339,14 +340,44 @@ class TreeNodeTraversal:
     @staticmethod
     def build_tree_inorder_postorder_recursively_v2(inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
 
-        def build(left, right):
+        def build_nodes(left, right):
             if left > right:
                 return None
             node = TreeNode(postorder.pop())
             i = maps[node.val]
-            node.right = build(i + 1, right)
-            node.left = build(left, i - 1)
+            node.right = build_nodes(i + 1, right)
+            node.left = build_nodes(left, i - 1)
             return node
 
         maps = {v: i for i, v in enumerate(inorder)}
-        return build(0, len(inorder) - 1)
+        return build_nodes(0, len(inorder) - 1)
+
+    @staticmethod
+    def build_tree_preorder_inorder(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+
+        def build_nodes(left, right):
+            if left > right:
+                return None
+            node = TreeNode(preorder.pop(0))
+            i = inorder_map[node.val]
+            node.left = build_nodes(left, i - 1)
+            node.right = build_nodes(i + 1, right)
+            return node
+
+        inorder_map = {v: i for i, v in enumerate(inorder)}
+        return build_nodes(0, len(inorder) - 1)
+
+    @staticmethod
+    def connect_right_nodes(root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return None
+        nodes = [root]
+        while nodes:
+            for i in range(len(nodes) - 1, 0, -1):
+                nodes[i-1].next = nodes[i]
+
+            for i in range(len(nodes)):
+                node = nodes.pop(0)
+                if node.left:
+                    nodes.extend([node.left, node.right])
+        return root

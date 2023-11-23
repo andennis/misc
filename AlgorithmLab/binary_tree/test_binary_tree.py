@@ -1,5 +1,5 @@
 import pytest
-from typing import List
+from typing import List, Optional
 from binary_tree import TreeNodeTraversal, TreeNode
 
 
@@ -393,3 +393,61 @@ def test_build_tree_using_inorder_and_preorder(inorder: List[int], postorder: Li
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
 
+@pytest.mark.parametrize("preorder, inorder, result", [
+    ([], [], []),
+    ([1, 2], [2, 1], [1, 2, None]),
+    ([1, 2], [1, 2], [1, None, 2]),
+    ([1, 2, 3], [2, 1, 3], [1, 2, 3]),
+    ([1, 2, 3, 4], [2, 1, 4, 3], [1, 2, 3, None, None, 4, None]),
+    ([1, 2, 3, 4], [2, 1, 3, 4], [1, 2, 3, None, None, None, 4]),
+    ([1, 2, 4, 3], [4, 2, 1, 3], [1, 2, 3, 4, None, None, None]),
+    ([1, 2, 4, 3], [2, 4, 1, 3], [1, 2, 3, None, 4, None, None]),
+    ([1, 2, 3, 4, 5, 6, 7], [2, 4, 5, 3, 6, 1, 7], [1, 2, 7, None, 3, None, None, 4, 6, None, 5, None, None]),
+    (
+        [1, 2, 4, 10, 11, 5, 6, 8, 9, 7, 3, 12, 13],
+        [4, 11, 10, 2, 8, 6, 9, 5, 7, 1, 3, 13, 12],
+        [1, 2, 3, 4, 5, None, 12, None, 10, 6, 7, 13, None, 11, None, 8, 9, None, None, None, None]
+     ),
+])
+def test_build_tree_using_inorder_and_preorder(preorder: List[int], inorder: List[int], result: List[int]):
+    node = TreeNodeTraversal.build_tree_preorder_inorder(preorder, inorder)
+    assert TreeNodeTraversal.tree_to_level_list(node) == result
+
+
+@pytest.mark.parametrize('root, result', [
+    (TreeNode(1), [1, None]),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)), [1, None, 2, 3, None]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4),
+                            right=TreeNode(5)),
+              right=TreeNode(3,
+                             left=TreeNode(6),
+                             right=TreeNode(7))),
+     [1, None, 2, 3, None, 4, 5, 6, 7, None]),
+])
+def test_connect_right_node(root, result):
+    data = TreeNodeTraversal.connect_right_nodes(root)
+    assert _build_right_connection_sec(data) == result
+
+
+def _build_right_connection_sec(root: Optional[TreeNode]) -> List[int]:
+    if not root:
+        return []
+    nodes = [root]
+    connect_seq = []
+    while nodes:
+        node = nodes[0]
+        while node:
+            connect_seq.append(node.val)
+            node = node.next
+        connect_seq.append(None)
+
+        for i in range(len(nodes)):
+            node = nodes.pop(0)
+            if node.left:
+                nodes.extend([node.left, node.right])
+
+    return connect_seq
