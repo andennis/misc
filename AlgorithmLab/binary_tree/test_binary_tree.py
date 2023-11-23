@@ -383,13 +383,13 @@ def test_tree_to_list(root, result):
     # )
 ])
 def test_build_tree_using_inorder_and_preorder(inorder: List[int], postorder: List[int], result: List[int]):
-    node = TreeNodeTraversal().build_tree_inorder_preorder_iteratively(inorder, postorder)
+    node = TreeNodeTraversal().build_tree_inorder_postorder_iteratively(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
-    node = TreeNodeTraversal().build_tree_inorder_preorder_recursively_v1(inorder, postorder)
+    node = TreeNodeTraversal().build_tree_inorder_postorder_recursively_v1(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
-    node = TreeNodeTraversal.build_tree_inorder_preorder_recursively_v2(inorder, postorder)
+    node = TreeNodeTraversal.build_tree_inorder_postorder_recursively_v2(inorder, postorder)
     assert TreeNodeTraversal.tree_to_level_list(node) == result
 
 
