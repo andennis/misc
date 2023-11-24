@@ -421,12 +421,27 @@ def test_build_tree_using_inorder_and_preorder(preorder: List[int], inorder: Lis
               right=TreeNode(3)), [1, None, 2, 3, None]),
     (TreeNode(1,
               left=TreeNode(2,
-                            left=TreeNode(4),
-                            right=TreeNode(5)),
+                            left=TreeNode(4,
+                                          left=TreeNode(8),
+                                          right=TreeNode(9)
+                                          ),
+                            right=TreeNode(5,
+                                           left=TreeNode(10),
+                                           right=TreeNode(11)
+                                           )
+                            ),
               right=TreeNode(3,
-                             left=TreeNode(6),
-                             right=TreeNode(7))),
-     [1, None, 2, 3, None, 4, 5, 6, 7, None]),
+                             left=TreeNode(6,
+                                           left=TreeNode(12),
+                                           right=TreeNode(13)
+                                           ),
+                             right=TreeNode(7,
+                                            left=TreeNode(14),
+                                            right=TreeNode(15)
+                                            )
+                             )
+              ),
+     [1, None, 2, 3, None, 4, 5, 6, 7, None, 8, 9, 10, 11, 12, 13, 14, 15, None]),
 ])
 def test_connect_right_node(root, result):
     data = TreeNodeTraversal.connect_right_nodes(root)

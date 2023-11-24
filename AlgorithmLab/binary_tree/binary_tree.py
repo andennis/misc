@@ -385,3 +385,19 @@ class TreeNodeTraversal:
                     nodes[i*2] = node.left
                     nodes[i*2 + 1] = node.right
         return root
+
+    @staticmethod
+    def connect_right_nodes_v2(root: Optional[TreeNode]) -> Optional[TreeNode]:
+        """The solution from leetcode"""
+        curr = root
+        nxt = root.left if root else None
+
+        while curr and nxt:
+            curr.left.next = curr.right
+            if curr.next:
+                curr.right.next = curr.next.left
+            curr = curr.next
+            if not curr:
+                curr = nxt
+                nxt = curr.left
+        return root
