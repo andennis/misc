@@ -368,36 +368,38 @@ class TreeNodeTraversal:
         return build_nodes(0, len(inorder) - 1)
 
     @staticmethod
-    def connect_right_nodes(root: Optional[TreeNode]) -> Optional[TreeNode]:
+    def connect_right_nodes_v1(root: Optional[TreeNode]) -> Optional[TreeNode]:
         if not root:
             return None
         nodes = [root]
-        while any(nodes):
-            for i in range(len(nodes) - 1, 0, -1):
-                nodes[i-1].next = nodes[i]
+        while nodes:
+            nodes = [x for x in nodes if x is not None]
+            for i in range(len(nodes)-1):
+                nodes[i].next = nodes[i + 1]
 
             level_num = len(nodes)
             nodes2 = nodes
             nodes = [None] * level_num * 2
             for i in range(level_num):
                 node = nodes2[i]
-                if node.left:
-                    nodes[i*2] = node.left
-                    nodes[i*2 + 1] = node.right
+                nodes[i*2] = node.left
+                nodes[i*2 + 1] = node.right
+
         return root
 
     @staticmethod
     def connect_right_nodes_v2(root: Optional[TreeNode]) -> Optional[TreeNode]:
         """The solution from leetcode"""
         curr = root
-        nxt = root.left if root else None
+        level_start = root.left if root else None
 
-        while curr and nxt:
+        while curr and level_start:
             curr.left.next = curr.right
             if curr.next:
                 curr.right.next = curr.next.left
             curr = curr.next
+            # start next level
             if not curr:
-                curr = nxt
-                nxt = curr.left
+                curr = level_start
+                level_start = curr.left
         return root

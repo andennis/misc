@@ -442,9 +442,19 @@ def test_build_tree_using_inorder_and_preorder(preorder: List[int], inorder: Lis
                              )
               ),
      [1, None, 2, 3, None, 4, 5, 6, 7, None, 8, 9, 10, 11, 12, 13, 14, 15, None]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4),
+                            right=TreeNode(5)
+                            ),
+              right=TreeNode(3,
+                             right=TreeNode(7)
+                             )
+              ),
+     [1, None, 2, 3, None, 4, 5, 7, None]),
 ])
 def test_connect_right_node(root, result):
-    data = TreeNodeTraversal.connect_right_nodes(root)
+    data = TreeNodeTraversal.connect_right_nodes_v1(root)
     assert _build_right_connection_sec(data) == result
 
 
