@@ -372,12 +372,16 @@ class TreeNodeTraversal:
         if not root:
             return None
         nodes = [root]
-        while nodes:
+        while any(nodes):
             for i in range(len(nodes) - 1, 0, -1):
                 nodes[i-1].next = nodes[i]
 
-            for i in range(len(nodes)):
-                node = nodes.pop(0)
+            level_num = len(nodes)
+            nodes2 = nodes
+            nodes = [None] * level_num * 2
+            for i in range(level_num):
+                node = nodes2[i]
                 if node.left:
-                    nodes.extend([node.left, node.right])
+                    nodes[i*2] = node.left
+                    nodes[i*2 + 1] = node.right
         return root
