@@ -415,6 +415,7 @@ def test_build_tree_using_inorder_and_preorder(preorder: List[int], inorder: Lis
 
 
 @pytest.mark.parametrize('root, result', [
+    (None, []),
     (TreeNode(1), [1, None]),
     (TreeNode(1,
               left=TreeNode(2),
@@ -473,6 +474,19 @@ def test_build_tree_using_inorder_and_preorder(preorder: List[int], inorder: Lis
                              )
               ),
      [1, None, 2, 3, None, 4, 5, 6, None, 7, 8, 9, None, 10, 11, None]),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4,
+                                          left=TreeNode(7)
+                                          ),
+                            right=TreeNode(5)),
+              right=TreeNode(3,
+                             right=TreeNode(6,
+                                            right=TreeNode(8)
+                                            )
+                             )
+              ),
+     [1, None, 2, 3, None, 4, 5, 6, None, 7, 8, None]),
 ])
 def test_connect_right_node(root, result):
     data = TreeNodeTraversal.connect_right_nodes_v2(root)

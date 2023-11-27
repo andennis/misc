@@ -389,18 +389,30 @@ class TreeNodeTraversal:
 
     @staticmethod
     def connect_right_nodes_v2(root: Optional[TreeNode]) -> Optional[TreeNode]:
+        if not root:
+            return root
         cur_node = root
         next_level_node = root.left or root.right
         while cur_node and next_level_node:
             if cur_node.left and cur_node.right:
                 cur_node.left.next = cur_node.right
-            if cur_node.next:
-                if cur_node.right:
-                    cur_node.right.next = cur_node.next.left or cur_node.next.right
-                elif cur_node.left:
-                    cur_node.left.next = cur_node.next.left or cur_node.next.right
 
-            cur_node = cur_node.next
+            node = cur_node.next
+            while node:
+                if cur_node.right:
+                    cur_node.right.next = node.left or node.right
+                    if cur_node.right.next:
+                        break
+                elif cur_node.left:
+                    cur_node.left.next = node.left or node.right
+                    if cur_node.left.next:
+                        break
+                else:
+                    break
+                node = node.next
+
+            cur_node = node
+
             if not cur_node:
                 cur_node = next_level_node
                 next_level_node = next_level_node.left or next_level_node.right
