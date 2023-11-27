@@ -447,3 +447,32 @@ class TreeNodeTraversal:
                     q.append(node.right)
         return root
 
+    @staticmethod
+    def connect_right_nodes_v4(root: Optional[TreeNode]) -> Optional[TreeNode]:
+        """
+        The solution from the leetcode:
+            https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/editorial/
+        """
+        def process_child(child_node, prev_child, left_most):
+            if child_node:
+                if prev_child:
+                    prev_child.next = child_node
+                else:
+                    left_most = child_node
+                prev_child = child_node
+            return prev_child, left_most
+
+        if not root:
+            return root
+
+        leftmost = root
+
+        while leftmost:
+            prev, curr = None, leftmost
+            leftmost = None
+            while curr:
+                prev, leftmost = process_child(curr.left, prev, leftmost)
+                prev, leftmost = process_child(curr.right, prev, leftmost)
+                curr = curr.next
+
+        return root
