@@ -389,17 +389,25 @@ class TreeNodeTraversal:
 
     @staticmethod
     def connect_right_nodes_v2(root: Optional[TreeNode]) -> Optional[TreeNode]:
-        """The solution from leetcode"""
-        curr = root
-        level_start = root.left if root else None
+        cur_node = root
+        next_level_node = root.left or root.right
+        while cur_node and next_level_node:
+            if cur_node.left and cur_node.right:
+                cur_node.left.next = cur_node.right
+            if cur_node.next:
+                if cur_node.right:
+                    cur_node.right.next = cur_node.next.left or cur_node.next.right
+                elif cur_node.left:
+                    cur_node.left.next = cur_node.next.left or cur_node.next.right
 
-        while curr and level_start:
-            curr.left.next = curr.right
-            if curr.next:
-                curr.right.next = curr.next.left
-            curr = curr.next
-            # start next level
-            if not curr:
-                curr = level_start
-                level_start = curr.left
+            cur_node = cur_node.next
+            if not cur_node:
+                cur_node = next_level_node
+                next_level_node = next_level_node.left or next_level_node.right
+                if cur_node and not next_level_node:
+                    node = cur_node.next
+                    while not next_level_node and node:
+                        next_level_node = node.left or node.right
+                        node = node.next
+
         return root
