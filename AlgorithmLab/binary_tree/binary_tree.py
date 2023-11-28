@@ -476,3 +476,15 @@ class TreeNodeTraversal:
                 curr = curr.next
 
         return root
+
+    def lowest_common_ancestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        if root.val in [p.val, q.val]:
+            return root
+
+        left_node = self.lowest_common_ancestor(root.left, p, q)
+        right_node = self.lowest_common_ancestor(root.right, p, q)
+        if left_node is not None and right_node is not None:
+            return root
+        return left_node or right_node

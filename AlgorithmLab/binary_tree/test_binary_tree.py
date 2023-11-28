@@ -515,3 +515,63 @@ def _build_right_connection_sec(root: Optional[TreeNode]) -> List[int]:
                 nodes.append(node.right)
 
     return connect_seq
+
+
+@pytest.mark.parametrize("root, nv1, nv2, result", [
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)), 2, 3, 1),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)), 3, 1, 1),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4),
+                            right=TreeNode(5)),
+              right=TreeNode(3)), 4, 5, 2),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4),
+                            right=TreeNode(5)),
+              right=TreeNode(3)), 4, 3, 1),
+    (TreeNode(3,
+              left=TreeNode(5,
+                            left=TreeNode(6),
+                            right=TreeNode(2,
+                                           left=TreeNode(7),
+                                           right=TreeNode(4))),
+              right=TreeNode(1,
+                             left=TreeNode(0),
+                             right=TreeNode(8)
+                             )
+              ),
+     5, 1, 3),
+    (TreeNode(3,
+              left=TreeNode(5,
+                            left=TreeNode(6),
+                            right=TreeNode(2,
+                                           left=TreeNode(7),
+                                           right=TreeNode(4))),
+              right=TreeNode(1,
+                             left=TreeNode(0),
+                             right=TreeNode(8)
+                             )
+              ),
+     5, 4, 5),
+])
+def test_lowest_common_ancestor(root, nv1, nv2, result):
+    nv1_node = _get_node_by_value(root, nv1)
+    nv2_node = _get_node_by_value(root, nv2)
+    lca_node = TreeNodeTraversal().lowest_common_ancestor(root, nv1_node, nv2_node)
+    assert lca_node
+    assert lca_node.val == result
+
+
+def _get_node_by_value(root: Optional[TreeNode], val: int) -> Optional[TreeNode]:
+    if not root:
+        return None
+    if root.val == val:
+        return root
+    l_n = _get_node_by_value(root.left, val)
+    r_n = _get_node_by_value(root.right, val)
+    return l_n or r_n
