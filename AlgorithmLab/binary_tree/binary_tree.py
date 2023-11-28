@@ -488,3 +488,61 @@ class TreeNodeTraversal:
         if left_node is not None and right_node is not None:
             return root
         return left_node or right_node
+
+    def serialize(self, root: Optional[TreeNode]) -> str:
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+        if not root:
+            return ""
+
+        left = self.serialize(root.left)
+        right = self.serialize(root.right)
+
+        if left and right:
+            return "{}({},{})".format(root.val, left, right)
+        if left:
+            return "{}({})".format(root.val, left)
+        if right:
+            return "{}(,{})".format(root.val, right)
+        return str(root.val)
+
+    def deserialize(self, data: str) -> Optional[TreeNode]:
+        """Decodes your encoded data to tree.
+
+        :type data: str
+        :rtype: TreeNode
+        """
+        def parse_child_nodes(data: str) -> (str, str):
+            pr_i = data.find("(")
+            cm_i = data.find(",")
+            if pr_i != -1 and pr_i < cm_i:
+                n_left = n_right = 0
+                for j in range(pr_i, len(data)):
+                    if data[j] == "(":
+                        n_left += 1
+                    elif data[j] == ")":
+                        n_right += 1
+                    if n_left == n_right:
+                        cm_i = j+1
+                        break
+
+            if cm_i != -1:
+                return data[:cm_i], data[cm_i+1:]
+
+            return data, ""
+
+        if not data:
+            return None
+
+        i = data.find("(")
+        if i == -1:
+            return TreeNode(int(data))
+
+        left_data, right_data = parse_child_nodes(data[i+1:-1])
+        left_node = self.deserialize(left_data)
+        right_node = self.deserialize(right_data)
+        return TreeNode(int(data[:i]), left=left_node, right=right_node)
+

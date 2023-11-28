@@ -557,6 +557,18 @@ def _build_right_connection_sec(root: Optional[TreeNode]) -> List[int]:
                              right=TreeNode(8)
                              )
               ),
+     7, 6, 5),
+    (TreeNode(3,
+              left=TreeNode(5,
+                            left=TreeNode(6),
+                            right=TreeNode(2,
+                                           left=TreeNode(7),
+                                           right=TreeNode(4))),
+              right=TreeNode(1,
+                             left=TreeNode(0),
+                             right=TreeNode(8)
+                             )
+              ),
      5, 4, 5),
 ])
 def test_lowest_common_ancestor(root, nv1, nv2, result):
@@ -575,3 +587,35 @@ def _get_node_by_value(root: Optional[TreeNode], val: int) -> Optional[TreeNode]
     l_n = _get_node_by_value(root.left, val)
     r_n = _get_node_by_value(root.right, val)
     return l_n or r_n
+
+
+@pytest.mark.parametrize("root, result", [
+    (None, ""),
+    (TreeNode(1), "1"),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(3)
+              ),
+     "1(2,3)"),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4)
+                            ),
+              right=TreeNode(3,
+                             right=TreeNode(-5,
+                                            left=TreeNode(0),
+                                            right=TreeNode(-16))
+                             )
+              ),
+     "1(2(4),3(,-5(0,-16)))"),
+])
+def test_serialize(root, result):
+    assert TreeNodeTraversal().serialize(root) == result
+
+
+@pytest.mark.parametrize("tree_data, result", [
+    ("1(2(4),3(,-5(0,-16)))", [1, 2, 3, 4, None, None, -5, None, None, 0, -16])
+])
+def test_deserialize(tree_data, result):
+    root = TreeNodeTraversal().deserialize(tree_data)
+    assert TreeNodeTraversal.tree_to_level_list(root) == result
