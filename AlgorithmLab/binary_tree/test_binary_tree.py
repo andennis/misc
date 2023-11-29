@@ -659,3 +659,41 @@ def test_serialize_v2(root, result):
 def test_deserialize_v2(tree_data, result):
     root = TreeNodeTraversal().deserialize_v2(tree_data)
     assert TreeNodeTraversal.tree_to_level_list(root) == result
+
+
+@pytest.mark.parametrize("root, result", [
+    (None, ","),
+    (TreeNode(1), "1,,,"),
+    (TreeNode(1,
+              left=TreeNode(2),
+              right=TreeNode(2)
+              ),
+     "1,2,,,2,,,"),
+    (TreeNode(1,
+              left=TreeNode(2,
+                            left=TreeNode(4),
+                            right=TreeNode(6,
+                                           right=TreeNode(7,
+                                                          left=TreeNode(8)))
+                            ),
+              right=TreeNode(3,
+                             right=TreeNode(-5,
+                                            left=TreeNode(0),
+                                            right=TreeNode(-16))
+                             )
+              ),
+     "1,2,4,,,6,,7,8,,,,3,,-5,0,,,-16,,,"),
+])
+def test_serialize_v3(root, result):
+    assert TreeNodeTraversal().serialize_v3(root) == result
+
+
+@pytest.mark.parametrize("tree_data, result", [
+    ("", []),
+    (",", []),
+    ("1,2,,,2,,,", [1, 2, 2]),
+    ("1,2,4,,,6,,7,8,,,,3,,-5,0,,,-16,,,", [1, 2, 3, 4, 6, None, -5, None, None, None, 7, 0, -16, 8])
+])
+def test_deserialize_v3(tree_data, result):
+    root = TreeNodeTraversal().deserialize_v3(tree_data)
+    assert TreeNodeTraversal.tree_to_level_list(root) == result

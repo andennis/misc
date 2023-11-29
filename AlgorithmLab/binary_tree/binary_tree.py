@@ -235,7 +235,8 @@ class TreeNodeTraversal:
                 result.append(node.val if node else None)
                 if node:
                     nodes.extend([node.left, node.right])
-        return result
+        i = next((i for i, x in enumerate(result[::-1]) if x is not None))
+        return result[:len(result) - i]
 
     def build_tree_inorder_postorder_iteratively(self, inorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
         if not inorder or not postorder:
@@ -609,3 +610,28 @@ class TreeNodeTraversal:
         inorder_map = {int(x): i for i, x in enumerate(inorder)}
         return build_nodes(0, len(preorder))
 
+    def serialize_v3(self, root: Optional[TreeNode]) -> str:
+        if not root:
+            return ","
+        left = self.serialize_v3(root.left)
+        right = self.serialize_v3(root.right)
+        return "{},".format(root.val) + left + right
+
+    def deserialize_v3(self, data: str) -> Optional[TreeNode]:
+
+        def build_tree() -> Optional[TreeNode]:
+            if len(nodes) == 0:
+                return None
+
+            val = nodes.popleft()
+            if not val:
+                return None
+            left_node = build_tree()
+            right_node = build_tree()
+            return TreeNode(int(val), left=left_node, right=right_node)
+
+        if not data:
+            return None
+
+        nodes = deque(data.split(","))
+        return build_tree()
