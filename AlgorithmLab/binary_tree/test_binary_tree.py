@@ -410,4 +410,5 @@ def test_tree_to_list(root, result):
      7),
 ])
 def test_count_unival_subtrees(root, result):
-    assert TreeNodeTraversal.count_unival_subtrees(root) == result
+    assert TreeNodeTraversal.count_unival_subtrees_v1(root) == result
+    assert TreeNodeTraversal().count_unival_subtrees_v2(root) == result

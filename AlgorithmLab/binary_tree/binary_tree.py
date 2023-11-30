@@ -217,7 +217,7 @@ class TreeNodeTraversal:
         return self._calc_path(root.right, target_sum, cur_sum)
 
     @staticmethod
-    def count_unival_subtrees(root: Optional[TreeNode]) -> int:
+    def count_unival_subtrees_v1(root: Optional[TreeNode]) -> int:
         def is_unival_subtrees(node: Optional[TreeNode]):
             if not node:
                 return True
@@ -244,3 +244,27 @@ class TreeNodeTraversal:
         if is_unival_subtrees(root):
             count += 1
         return count
+
+    def count_unival_subtrees_v2(self, root: Optional[TreeNode]) -> int:
+        def count_subtrees(node: Optional[TreeNode]):
+            if not node:
+                return True
+
+            is_left = count_subtrees(node.left)
+            is_right = count_subtrees(node.right)
+            if is_left and is_right:
+                if node.left and node.val != node.left.val:
+                    return False
+                if node.right and node.val != node.right.val:
+                    return False
+                self.count += 1
+                return True
+
+            return False
+
+        if not root:
+            return 0
+
+        self.count = 0
+        count_subtrees(root)
+        return self.count
