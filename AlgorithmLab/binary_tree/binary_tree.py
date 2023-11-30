@@ -268,3 +268,27 @@ class TreeNodeTraversal:
         self.count = 0
         count_subtrees(root)
         return self.count
+
+    @staticmethod
+    def count_unival_subtrees_v3(root: Optional[TreeNode]) -> int:
+        def count_subtrees(node: Optional[TreeNode]) -> tuple[bool, int]:
+            if not node:
+                return True, 0
+
+            is_left, l_count = count_subtrees(node.left)
+            is_right, r_count = count_subtrees(node.right)
+            if is_left and is_right:
+                if node.left and node.val != node.left.val:
+                    return False, l_count + r_count
+                if node.right and node.val != node.right.val:
+                    return False, l_count + r_count
+
+                return True, l_count + r_count + 1
+
+            return False, l_count + r_count
+
+        if not root:
+            return 0
+
+        result = count_subtrees(root)
+        return result[1]
