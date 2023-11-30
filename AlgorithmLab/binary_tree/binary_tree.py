@@ -1,4 +1,5 @@
 from typing import Optional, List
+from collections import Counter
 
 from binary_tree import TreeNode
 
@@ -214,3 +215,32 @@ class TreeNodeTraversal:
         if self._calc_path(root.left, target_sum, cur_sum):
             return True
         return self._calc_path(root.right, target_sum, cur_sum)
+
+    @staticmethod
+    def count_unival_subtrees(root: Optional[TreeNode]) -> int:
+        def is_unival_subtrees(node: Optional[TreeNode]):
+            if not node:
+                return True
+            if not (node.left or node.right):
+                return True
+
+            global count
+            is_left = is_unival_subtrees(node.left)
+            if is_left and node.left:
+                count += 1
+            is_right = is_unival_subtrees(node.right)
+            if is_right and node.right:
+                count += 1
+
+            is_left = node.val == (node.left.val if node.left else node.val) and is_left
+            is_right = node.val == (node.right.val if node.right else node.val) and is_right
+            return is_left and is_right
+
+        if not root:
+            return 0
+
+        global count
+        count = 0
+        if is_unival_subtrees(root):
+            count += 1
+        return count
