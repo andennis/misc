@@ -74,19 +74,9 @@ class BinaryTreeSerialization:
         def build_inorder_tree(node: Optional[TreeNode]):
             if not node:
                 return
-
-            inorder_stack = deque([(root, 2)])
-            while inorder_stack:
-                cur_node, node_status = inorder_stack.pop()
-                if node_status == 2:
-                    inorder_stack.append((cur_node, 1))
-                    if cur_node.left:
-                        inorder_stack.append((cur_node.left, 2))
-                elif node_status == 1:
-                    inorder_stack.append((cur_node, 0))
-                    if cur_node.right:
-                        inorder_stack.append((cur_node.right, 2))
-                    inorder.append(str(cur_node.val))
+            build_inorder_tree(node.left)
+            inorder.append(str(node.val))
+            build_inorder_tree(node.right)
 
         if not root:
             return ""
