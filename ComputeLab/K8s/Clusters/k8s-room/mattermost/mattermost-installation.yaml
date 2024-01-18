@@ -5,7 +5,7 @@ metadata:
   namespace: mattermost
 spec:
   image: registry.local/mattermost/mattermost-enterprise-edition
-  version: release-8.0
+  version: release-8.1
   imagePullSecrets:
     - name: registry-local-client
   licenseSecret: ""
